@@ -11,6 +11,9 @@ DELTA = { #移動用辞書
     pg.K_LEFT: (-5,0),
     pg.K_RIGHT: (+5,0),
 }
+DELTA2 ={
+    -10:
+}
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 def check_bound(rct: pg.Rect) -> tuple[bool, bool]:
@@ -44,6 +47,18 @@ def gameover(screen: pg.Surface) -> None:#ゲームオーバー時に，半透�
        pg.display.update()
        #5秒間表示
        time.sleep(5)
+
+def init_bb_imgs() -> tuple[list[pg.Surface], list[int]]:
+    #サイズの異なる爆弾Surfaceを要素としたリストと加速度リストを返す関数の定義
+    bb_accs = [a for a in range(1, 11)]
+    bb_imgs =[]
+    for r in range(1, 11):
+        bb_img = pg.Surface((20*r, 20*r))
+        pg.draw.circle(bb_img, (255, 0, 0), (10*r, 10*r), 10*r)
+        bb_img.set_colorkey((0,0,0))
+        bb_imgs.append(bb_img)
+    return bb_imgs,bb_accs
+            
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))
@@ -60,6 +75,11 @@ def main():
     vx, vy = +5 ,+5# 爆弾の移動速度
     clock = pg.time.Clock()
     tmr = 0
+    bb_imgs, bb_accs = init_bb_imgs()
+    
+    def get_kk_img(sum_mv: tuple[int, int]) -> pg.Surface:
+
+
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT: 
@@ -87,14 +107,19 @@ def main():
         kk_rct.move_ip(sum_mv)
         if check_bound(kk_rct) != (True, True):
             kk_rct.move_ip(-sum_mv[0], -sum_mv[1])  # 移動をなかったことにする
+        #サイズの異なる爆弾Surfaceを要素としたリストと加速度リストを返す関数の呼び出し
+        avx = vx*bb_accs[min(tmr//500, 9)]
+        avy = vy*bb_accs[min(tmr//500, 9)]
+        bb_img = bb_imgs[min(tmr//500, 9)]
         screen.blit(kk_img, kk_rct)
-        bb_rct.move_ip(vx, vy)# 爆弾の移動
+        bb_rct.move_ip(avx, avy)# 爆弾の移動
         yoko, tate = check_bound(bb_rct)
         if not yoko:  # 横方向にはみ出ていたら
             vx *= -1
         if not tate:  # 縦方向にはみ出ていたら
             vy *= -1
         screen.blit(bb_img, bb_rct)# 爆弾の描画
+        
         pg.display.update()
         tmr += 1
         clock.tick(50)
