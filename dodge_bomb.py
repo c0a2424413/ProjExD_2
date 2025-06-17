@@ -24,7 +24,7 @@ def main():
     bb_img = pg.Surface((20,20))# 空のSurfaceを作る（爆弾用）
     pg.draw.circle(bb_img, (255, 0, 0),(10,10),10) # 赤い円を描く
     bb_img.set_colorkey((0,0,0)) # 黒を透明色に設定
-    bb_rct = bb_img.rect()# 爆弾Rectを取得
+    bb_rct = bb_img.get_rect()# 爆弾Rectを取得
     bb_rct.centerx = random.randint(0,WIDTH) # 横座標用の乱数
     bb_rct.centery = random.randint(0, HEIGHT)# 縦座標用の乱数
     vx, vy = +5 ,+5# 爆弾の移動速度
