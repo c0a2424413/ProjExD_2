@@ -4,6 +4,7 @@ import sys
 import pygame as pg
 import time
 
+
 WIDTH, HEIGHT = 1100, 650
 DELTA = { #移動用辞書
     pg.K_UP: (0,-5),
@@ -12,7 +13,9 @@ DELTA = { #移動用辞書
     pg.K_RIGHT: (+5,0),
 }
 
+
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
 
 def check_bound(rct: pg.Rect) -> tuple[bool, bool]:
     """
@@ -26,6 +29,7 @@ def check_bound(rct: pg.Rect) -> tuple[bool, bool]:
     if rct.top < 0 or HEIGHT < rct.bottom: # 縦方向の画面外判定
         tate = False
     return yoko, tate  # 横方向，縦方向の画面内判定結果を返す
+
 
 def gameover(screen: pg.Surface) -> None:#ゲームオーバー時に，半透明の黒い画面上に「Game Over」と表示し，泣いているこうかとん画像を貼り付ける関数
        #画面をブラックアウト
@@ -46,6 +50,7 @@ def gameover(screen: pg.Surface) -> None:#ゲームオーバー時に，半透�
        #5秒間表示
        time.sleep(5)
 
+
 def init_bb_imgs() -> tuple[list[pg.Surface], list[int]]:
     #サイズの異なる爆弾Surfaceを要素としたリストと加速度リストを返す関数の定義
     bb_accs = [a for a in range(1, 11)]
@@ -57,11 +62,13 @@ def init_bb_imgs() -> tuple[list[pg.Surface], list[int]]:
         bb_imgs.append(bb_img)
     return bb_imgs,bb_accs
 
+
 def get_kk_img(sum_mv: tuple[int, int]) -> pg.Surface:
     for key1 in DELTA2.items():
         if sum_mv == key1:
             kk_img2 = DELTA2[key1]
     return kk_img2
+
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
