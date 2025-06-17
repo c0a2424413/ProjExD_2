@@ -11,9 +11,7 @@ DELTA = { #移動用辞書
     pg.K_LEFT: (-5,0),
     pg.K_RIGHT: (+5,0),
 }
-DELTA2 ={
-    -10:
-}
+
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 def check_bound(rct: pg.Rect) -> tuple[bool, bool]:
@@ -58,7 +56,13 @@ def init_bb_imgs() -> tuple[list[pg.Surface], list[int]]:
         bb_img.set_colorkey((0,0,0))
         bb_imgs.append(bb_img)
     return bb_imgs,bb_accs
-            
+
+def get_kk_img(sum_mv: tuple[int, int]) -> pg.Surface:
+    for key1 in DELTA2.items():
+        if sum_mv == key1:
+            kk_img2 = DELTA2[key1]
+    return kk_img2
+
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))
@@ -75,11 +79,18 @@ def main():
     vx, vy = +5 ,+5# 爆弾の移動速度
     clock = pg.time.Clock()
     tmr = 0
+    DELTA2 ={
+    (+5,0):pg.transform.rotozoom(kk_img, 0, 1.0),
+    (+5,-5):pg.transform.rotozoom(kk_img, 45, 1.0),
+    (0,-5):pg.transform.rotozoom(kk_img, 90, 1.0),
+    (-5,-5):pg.transform.rotozoom(kk_img, 135, 1.0),
+    (-5,0):pg.transform.rotozoom(kk_img, 180, 1.0),
+    (-5,+5):pg.transform.rotozoom(kk_img, 225, 1.0),
+    (0,+5):pg.transform.rotozoom(kk_img, 270, 1.0),
+    (+5,+5):pg.transform.rotozoom(kk_img, 315, 1.0),
+}
     bb_imgs, bb_accs = init_bb_imgs()
-    
-    def get_kk_img(sum_mv: tuple[int, int]) -> pg.Surface:
-
-
+    kk_img = get_kk_img((0, 0)) 
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT: 
@@ -105,6 +116,7 @@ def main():
         #if key_lst[pg.K_RIGHT]:
         #    sum_mv[0] += 5
         kk_rct.move_ip(sum_mv)
+        kk_img = get_kk_img(tuple(sum_mv))
         if check_bound(kk_rct) != (True, True):
             kk_rct.move_ip(-sum_mv[0], -sum_mv[1])  # 移動をなかったことにする
         #サイズの異なる爆弾Surfaceを要素としたリストと加速度リストを返す関数の呼び出し
